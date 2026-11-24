@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Как читать сигналы тела — методичка к мастер-классу</title>
+<style>
+  :root{
+    --fs: 17px;
+    --bg: #f6f4ef;
+    --text: #23201d;
+    --muted: #6b645c;
+    --card: #ffffff;
+    --border: #e4dfd6;
+    --accent: #8a6d3b;
+    --quote-bg: #f1ede5;
+    --bad-bg: #fdecea;
+    --bad: #b3261e;
+    --good-bg: #e8f5ee;
+    --good: #1e7a4a;
+    --shadow: 0 6px 24px rgba(0,0,0,.07);
+  }
+
+  [data-theme="dark"]{
+    --bg: #14161a;
+    --text: #e7e4de;
+    --muted: #9c958b;
+    --card: #1c1f24;
+    --border: #2c3138;
+    --accent: #d6ab5f;
+    --quote-bg: #22262c;
+    --bad-bg: #3a2220;
+    --bad: #ff8b7d;
+    --good-bg: #1c2f25;
+    --good: #74d6a0;
+    --shadow: 0 6px 24px rgba(0,0,0,.4);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.65;
+    transition: background-color .25s ease, color .25s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Панель управления ── */
+  .toolbar{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toolbar .group{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: var(--shadow);
+  }
+
+  .toolbar button{
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, transform .1s ease;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .toolbar button:hover{ background: var(--quote-bg); }
+  .toolbar button:active{ transform: scale(.95); }
+  .toolbar button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  .toolbar button:disabled{ opacity: .35; cursor: default; }
+
+  .toolbar .theme-btn{ display: flex; align-items: center; gap: 8px; }
+
+  /* ── Документ ── */
+  .page{
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 22px 96px;
+    font-size: var(--fs);
+    transition: font-size .15s ease;
+  }
+
+  h1{
+    font-size: 1.7em;
+    line-height: 1.25;
+    margin: 0 0 .35em;
+    letter-spacing: -.01em;
+  }
+
+  .subtitle{
+    color: var(--muted);
+    font-size: .95em;
+    margin: 0 0 1.8em;
+    padding-bottom: 1.4em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .goal{
+    background: var(--quote-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 1em 1.2em;
+    margin: 0 0 2.4em;
+    font-size: .97em;
+  }
+
+  .goal b{ color: var(--accent); }
+
+  h2{
+    font-size: 1.28em;
+    line-height: 1.3;
+    margin: 2.4em 0 .9em;
+    padding-top: .8em;
+    border-top: 2px solid var(--border);
+    letter-spacing: -.005em;
+  }
+
+  h2 .stage{
+    display: inline-block;
+    color: var(--accent);
+    font-size: .82em;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-right: .4em;
+  }
+
+  h3{
+    font-size: 1.06em;
+    margin: 1.9em 0 .6em;
+  }
+
+  p{ margin: 0 0 1em; }
+
+  ul, ol{ margin: 0 0 1.1em; padding-left: 1.4em; }
+  li{ margin-bottom: .45em; }
+
+  ul.plain{ list-style: none; padding-left: 0; }
+  ul.plain li{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .7em 1em;
+    margin-bottom: .55em;
+    box-shadow: var(--shadow);
+  }
+  ul.plain li b{ color: var(--accent); }
+
+  blockquote{
+    margin: 1.1em 0;
+    padding: .9em 1.1em;
+    background: var(--quote-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    font-style: italic;
+  }
+  blockquote p:last-child{ margin-bottom: 0; }
+  blockquote .src{
+    display: block;
+    font-style: normal;
+    font-size: .85em;
+    color: var(--muted);
+    margin-top: .5em;
+  }
+
+  .label{
+    display: inline-block;
+    font-size: .78em;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .2em .6em;
+    border-radius: 999px;
+    margin-bottom: .5em;
+  }
+
+  .box{
+    border-radius: 12px;
+    padding: .95em 1.15em;
+    margin: 1.1em 0;
+  }
+  .box p:last-child{ margin-bottom: 0; }
+  .box .label{ margin-bottom: .45em; }
+
+  .box.bad{ background: var(--bad-bg); border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent); }
+  .box.bad .label{ background: var(--bad); color: #fff; }
+  .box.bad strong{ color: var(--bad); }
+
+  .box.good{ background: var(--good-bg); border: 1px solid color-mix(in srgb, var(--good) 35%, transparent); }
+  .box.good .label{ background: var(--good); color: #fff; }
+  .box.good strong{ color: var(--good); }
+
+  .warn{
+    background: var(--quote-bg);
+    border: 1px dashed color-mix(in srgb, var(--accent) 60%, transparent);
+    border-radius: 12px;
+    padding: .95em 1.15em;
+    margin: 1.2em 0;
+  }
+  .warn .label{ background: var(--accent); color: #fff; }
+  .warn p:last-child{ margin-bottom: 0; }
+
+  .arrow{
+    color: var(--muted);
+    font-size: .9em;
+    margin: .2em 0;
+    padding-left: 1.2em;
+  }
+
+  hr{
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 2.4em 0;
+  }
+
+  .final{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.3em 1.4em;
+    box-shadow: var(--shadow);
+    margin-top: 2.6em;
+  }
+  .final h3{ margin-top: 0; }
+  .final p:last-child{ margin-bottom: 0; }
+
+  .top-link{
+    display: block;
+    text-align: center;
+    margin-top: 3em;
+    font-size: .85em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .top-link:hover{ color: var(--accent); }
+
+  @media (max-width: 520px){
+    .page{ padding: 28px 16px 80px; }
+    h1{ font-size: 1.4em; }
+    .toolbar button{ padding: 7px 10px; font-size: 14px; }
+  }
+
+  @media print{
+    .toolbar, .top-link{ display: none; }
+    body{ background: #fff; color: #000; }
+    .page{ max-width: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="group" role="group" aria-label="Размер текста">
+    <button id="fs-minus" title="Уменьшить текст" aria-label="Уменьшить текст">A−</button>
+    <button id="fs-reset" title="Сбросить размер текста" aria-label="Сбросить размер текста">A</button>
+    <button id="fs-plus" title="Увеличить текст" aria-label="Увеличить текст">A+</button>
+  </div>
+  <div class="group">
+    <button id="theme-toggle" class="theme-btn" title="Переключить тему" aria-label="Переключить тему">
+      <span id="theme-icon">🌙</span><span id="theme-text">Тёмная тема</span>
+    </button>
+  </div>
+</div>
+
+<main class="page" id="top">
+
+  <h1>Пошаговая методичка: чтение сигналов тела и сопровождение клиента</h1>
+  <p class="subtitle">Для участников практического мастер-класса</p>
+
+  <div class="goal">
+    <b>Цель методички:</b> научиться считывать невербальные и физические сигналы тела клиента,
+    выстроить экологичную коммуникацию, провести грамотную диагностику и создать пространство,
+    в которое клиенту захочется возвращаться.
+  </div>
+
+  <!-- ЭТАП 1 -->
+  <h2><span class="stage">Этап 1.</span> До встречи: портрет клиента и первичный фильтр</h2>
+  <p>Диагностика начинается ещё до личного знакомства. На этом этапе вы должны отсечь тех,
+     кому не можете помочь, и притянуть «своих» клиентов. Это фундамент для масштабирования
+     ваших услуг.</p>
+
+  <h3>1. Формирование портрета идеального клиента (задание)</h3>
+  <p>Опишите клиента, который приходит к вам преимущественно сейчас, по следующим параметрам:</p>
+  <ul class="plain">
+    <li><b>Диапазон возраста</b></li>
+    <li><b>Основной запрос</b></li>
+    <li><b>Состояние тела и проблемы со здоровьем</b></li>
+    <li><b>Интересы и ценности</b></li>
+    <li><b>Источник привлечения</b> (откуда узнаёт о вас)</li>
+  </ul>
+
+  <h3>2. Фильтрация на этапе переписки</h3>
+  <p>Реклама и первичный ответ должны учитывать спектр проблем, которые вы решаете лучше всего.
+     Не бойтесь отказывать — ваши люди всё равно вас найдут.</p>
+
+  <div class="box bad">
+    <span class="label">Чужой клиент — отсеиваем</span>
+    <blockquote>
+      <p>«Здравствуйте. У меня коксартроз, не могу ходить, хожу только до магазина с палочкой,
+         очень болит спина, там грыжи и протрузии, ещё травма была колена, вы соседке делали
+         массаж — она побежала после первого сеанса. Когда к вам записаться?»</p>
+    </blockquote>
+    <p>Здесь запрос на «чудо», перекладывание ответственности, наличие абсолютных противопоказаний.</p>
+  </div>
+
+  <div class="box good">
+    <span class="label">Свой клиент — работаем</span>
+    <blockquote>
+      <p>«Здравствуйте, у меня мышцы схватило после тренировки, можно к вам на массаж?»</p>
+    </blockquote>
+    <p>Здесь человек понимает причинно-следственную связь, сам принимает решение обратиться
+       к вам. Можно продолжать работать, уточняя запрос и договариваясь о встрече.</p>
+  </div>
+
+  <h3>3. Работа с противопоказаниями</h3>
+  <ul>
+    <li><b>Дистанционно.</b> Точный список абсолютных противопоказаний должен быть размещён
+        в ваших источниках информации (сайт, соцсети, закреп в мессенджере). Это сэкономит
+        время и деньги обеим сторонам.</li>
+    <li><b>Очно.</b> Подготовьте распечатанный список абсолютных и относительных противопоказаний.
+        Клиент должен внимательно его прочитать, понять и подписать.</li>
+  </ul>
+
+  <!-- ЭТАП 2 -->
+  <h2><span class="stage">Этап 2.</span> Встреча: психологическая подготовка и коммуникация</h2>
+
+  <h3>1. Создание атмосферы и снятие напряжения</h3>
+  <ul>
+    <li>Предложите травяной чай или воду сразу по приходу клиента. Это поможет переключить
+        внимание с внешних дел на себя и расслабиться.</li>
+    <li>Закладывайте время на этап ознакомления с противопоказаниями и диагностическую беседу.
+        Не торопитесь.</li>
+  </ul>
+
+  <h3>2. Настройка коммуникации (психотипы клиентов)</h3>
+  <p>Определите, насколько клиент разговорчив, и адаптируйте стиль общения:</p>
+  <ul>
+    <li><b>С «молчунами»:</b> задавайте вопросы об ощущениях в настоящем времени
+        («Что вы чувствуете сейчас?», «Как вам такое прикосновение?»).</li>
+    <li><b>С «разговорчивыми»:</b> слушайте внимательно, но мягко направляйте беседу вопросами
+        в русло желаемых ощущений и отношения к здоровью и текущему состоянию, с которым работаете.
+        Не давайте уходить далеко в прошлое. Так вы выявите страхи и сопротивления.</li>
+  </ul>
+
+  <h3>3. Правило 80/20 в презентациях и рекомендациях</h3>
+  <p>Прежде чем что-то предлагать, помните: новый шаг должен отличаться от текущего опыта
+     клиента не более чем на 20%.</p>
+
+  <div class="box bad">
+    <span class="label">Неэффективно</span>
+    <p>Рассказывать обо всей линейке продукции или использовать триггерные фразы.</p>
+    <p>Вы говорите: «Весь Китай этим пользуется для долгожительства».<br>
+       Клиент слышит: «Китайское = ненадёжное. Меня хотят развести на деньги».</p>
+    <p>Вы говорите: «Основано на принципах традиционной китайской медицины».<br>
+       Клиент слышит: «Профессора в Москве сказали, что я безнадёжен. Зря потрачу деньги,
+       не поможет».</p>
+  </div>
+
+  <div class="box good">
+    <span class="label">Эффективно</span>
+    <p>Говорить спокойно, нейтрально, опираясь на его личные приоритеты. Помните, что вы
+       не способны напрямую влиять на человека.</p>
+  </div>
+
+  <h3>4. Разграничение ответственности</h3>
+  <p>Важно донести до клиента: вы — помогающий специалист, а не врач. Вы помогаете увидеть то,
+     что скрыто снаружи, но разбираться с глубинными проблемами человек должен самостоятельно
+     с профильным врачом (как терапевт с больным зубом идёт к стоматологу, а не лечит себя сам).</p>
+
+  <!-- ЭТАП 3 -->
+  <h2><span class="stage">Этап 3.</span> Диагностика: визуальный и тактильный осмотр</h2>
+
+  <h3>1. Подготовка и гигиена</h3>
+  <p>Обеспечьте комфортное пространство для раздевания.</p>
+  <ul>
+    <li><b>Обработка стоп.</b> Обязательно обработайте стопы клиента раствором хлоргексидина
+        биглюконата и промокните салфеткой. <i>Причины:</i> психологическая уязвимость зоны,
+        удаление загрязнений, антисептика.</li>
+    <li><b>Обработка рук.</b> Помойте руки и нанесите санитайзер — желательно так, чтобы клиент
+        это видел, как и то, откуда вы достаёте перчатки. Можете проговорить вслух, рассказав
+        о том, как вы их заменяете или обрабатываете.</li>
+  </ul>
+
+  <h3>2. Визуальный осмотр (на что обращать внимание)</h3>
+  <ul>
+    <li><b>Конечности:</b> наличие/отсутствие, длина, симметрия объёма, развитость
+        (маркеры внутренних отклонений).</li>
+    <li><b>Кожа:</b> сухость/обезвоженность, жирность, потливость, родинки, родимые пятна.</li>
+    <li><b>Рубцы:</b> характер и расположение. Указывают на импланты, инородные тела,
+        фасциальные зажимы, операции (о которых клиент мог забыть).</li>
+    <li><b>Повреждения:</b> раны, ссадины, воспаления, сыпь.</li>
+  </ul>
+
+  <div class="warn">
+    <span class="label">Важно: эмоциональный контроль при осмотре</span>
+    <p>Спина — психологически уязвимая зона. Клиент редко видит её сам. Любую фразу произносите
+       корректно и нейтрально, следите за своим фоновым эмоциональным состоянием.</p>
+  </div>
+
+  <div class="box bad">
+    <span class="label">Неправильно</span>
+    <p>«Ого! У вас такой рубец на спине! Что вам делали?!»</p>
+  </div>
+
+  <div class="box good">
+    <span class="label">Правильно</span>
+    <p>«У вас есть какие-то неприятные ощущения в области рубца на спине?»</p>
+  </div>
+
+  <p>Вы получите очки вперёд, если на любой дефект тела сможете сохранить лицо и состояние,
+     как будто смотрите на что-то обыденное.</p>
+
+  <h3>3. Тактильная диагностика (пальпация)</h3>
+  <p>Проводите прощупывание через полотенце от затылка до голеней и стоп.</p>
+  <p><b>Цель:</b> оценить мышечную асимметрию и тонус.</p>
+  <p><b>Применение:</b> эта информация диктует режим входа (чем выше напряжение — тем ниже
+     сила тока на входе).</p>
+
+  <!-- ЭТАП 4 -->
+  <h2><span class="stage">Этап 4.</span> Проведение процедуры</h2>
+
+  <h3>1. Постановка задачи и снятие страха</h3>
+  <p>Определите зону интереса (целевую зону). Это нужно для объективной оценки эффекта
+     в дальнейшем (положительный, негативный, нейтральный).</p>
+  <p><b>Вручение пульта.</b> Вручая клиенту пульт управления, подчеркните, что вы проводите
+     процедуру сообща. Это снижает страх неизвестности, убирает ощущение зависимости и
+     возвращает ответственность клиенту.</p>
+  <p>Активно интересуйтесь ощущениями и тем, на каких зонах ему бы хотелось остановиться дольше.</p>
+
+  <h3>2. Тайминг</h3>
+  <p>В кабинете всегда должны быть часы. Уважайте своё и чужое время. Понимание целевой зоны
+     помогает достичь наилучшего эффекта именно здесь.</p>
+
+  <!-- ЭТАП 5 -->
+  <h2><span class="stage">Этап 5.</span> Завершение: пост-процедурный сервис и экологичные продажи</h2>
+
+  <h3>1. Зона комфорта</h3>
+  <p>Оставьте запас времени, чтобы клиент мог спокойно одеться. Идеально иметь отдельную зону
+     с зеркалом, резинками для волос, салфетками для снятия макияжа.</p>
+
+  <h3>2. Чай с собой</h3>
+  <p>Предложите травяной чай с собой. Это создаёт приятное послевкусие, ощущение заботы и
+     формирует якорь: «Ваш кабинет — место, куда хочется возвращаться». Очень хорошо —
+     брендированные стаканы и здоровые сладости с необычным вкусом.</p>
+
+  <h3>3. Экологичное предложение продукции (БАДы / чай)</h3>
+  <p>Никогда не предлагайте средство из линейки БАДов сразу в ответ на рассказ о симптомах!
+     Сначала выясните приоритеты.</p>
+
+  <div class="box good">
+    <span class="label">Пример экологичной продажи</span>
+    <p><b>Клиент:</b> «Вот решил комплексно заняться здоровьем. Отказался от кофе, стал лучше
+       себя чувствовать, к вам записался».</p>
+    <p><b>Мастер:</b> «Чем вы заменили кофе?»</p>
+    <p><b>Клиент:</b> «Ничем, воду пью, чай иногда».</p>
+    <p><b>Мастер:</b> «Вам было легко или сложно отказаться?»</p>
+    <p><b>Клиент:</b> «Не просто. Мне нравится вкус. Но сердцу от него нехорошо, давление
+       поднимается».</p>
+    <p><b>Мастер:</b> «Давайте заварю вам наш чай с собой».</p>
+    <p><b>Клиент:</b> «А что за чай?»</p>
+    <p class="arrow">Мастер рассказывает несколько фактов о влиянии чая ЛюВэй на здоровье —
+       спокойным тоном, как будто обсуждает порошок для стирки.</p>
+  </div>
+
+  <p>На следующей встрече, невзначай — лучше всего когда наливаете чай перед процедурой
+     (это создаёт контекст и снимает впечатление того, что вы хотите получить что-то от
+     человека), — мастер спрашивает, понравился ли чай. Часто клиент сам проявляет инициативу
+     узнать больше.</p>
+
+  <p><b>Правило подачи:</b> говорите о продуктах спокойно и нейтрально. Это даёт клиенту
+     ощущение, что он сам принимает решение, а на него не давят. Допустимо рассказать короткую
+     обезличенную историю опыта применения (своего или близких).</p>
+
+  <div class="final">
+    <h3>Вывод для специалиста</h3>
+    <p>Помните: у человека, который приходит к вам, отсутствуют ваши знания и опыт относительно
+       того, какую пользу может принести взаимодействие с вашими методиками и продуктами.</p>
+    <p>Будьте внимательны ко всему, что говорит и делает человек. Действуйте спокойно и только
+       в его интересах.</p>
+    <p>Только от вас зависит, какой опыт он получит.<br>
+       Только от вас зависит, что он расскажет (и расскажет ли) близким о методике и о вас.</p>
+    <p>Ваша ответственность — в ваших руках. Но помните главное: <b>выбор — всегда за человеком.</b></p>
+  </div>
+
+  <a href="#top" class="top-link">↑ Наверх</a>
+</main>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  /* ───── Размер шрифта ───── */
+  var FS_KEY = 'doc-font-size';
+  var FS_MIN = 13, FS_MAX = 28, FS_STEP = 1, FS_DEFAULT = 17;
+  var size = parseInt(localStorage.getItem(FS_KEY), 10);
+  if (isNaN(size)) size = FS_DEFAULT;
+
+  var btnMinus = document.getElementById('fs-minus');
+  var btnPlus  = document.getElementById('fs-plus');
+  var btnReset = document.getElementById('fs-reset');
+
+  function applySize() {
+    size = Math.max(FS_MIN, Math.min(FS_MAX, size));
+    root.style.setProperty('--fs', size + 'px');
+    localStorage.setItem(FS_KEY, size);
+    btnMinus.disabled = size <= FS_MIN;
+    btnPlus.disabled  = size >= FS_MAX;
+  }
+
+  btnMinus.addEventListener('click', function () { size -= FS_STEP; applySize(); });
+  btnPlus.addEventListener('click',  function () { size += FS_STEP; applySize(); });
+  btnReset.addEventListener('click', function () { size = FS_DEFAULT; applySize(); });
+
+  /* ───── Тема ───── */
+  var THEME_KEY = 'doc-theme';
+  var btnTheme = document.getElementById('theme-toggle');
+  var icon = document.getElementById('theme-icon');
+  var label = document.getElementById('theme-text');
+
+  function systemTheme() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+    var dark = theme === 'dark';
+    icon.textContent = dark ? '☀️' : '🌙';
+    label.textContent = dark ? 'Светлая тема' : 'Тёмная тема';
+    btnTheme.setAttribute('aria-pressed', String(dark));
+  }
+
+  var saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved === 'dark' || saved === 'light' ? saved : systemTheme());
+  applySize();
+
+  btnTheme.addEventListener('click', function () {
+    applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+</script>
+</body>
+</html>
